@@ -6,30 +6,106 @@
 <title>銅期貨 (HG) 價格趨勢圖</title>
 <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
 <style>
+  :root {
+    --bg: #f5f9fc;
+    --card-bg: #ffffff;
+    --card-shadow: rgba(0,0,0,0.08);
+    --text: #1a2b3c;
+    --title: #0d3b66;
+    --subtitle: #6b7c93;
+    --btn-bg: #eaf3fb;
+    --btn-border: #bcd9f0;
+    --btn-text: #0d5c9e;
+    --btn-active-bg: #0d5c9e;
+    --btn-active-text: #ffffff;
+    --footer-text: #9aa8b8;
+    --footer-border: #eef2f6;
+    --plot-bg: #ffffff;
+    --grid: #f0f4f8;
+    --up-color: #3ea6ff;
+    --down-color: #a8c8e8;
+    --toggle-bg: #eaf3fb;
+    --toggle-border: #bcd9f0;
+    --toggle-text: #0d5c9e;
+  }
+
+  html[data-theme="dark-gold"] {
+    --bg: #0f1115;
+    --card-bg: #17191f;
+    --card-shadow: rgba(0,0,0,0.5);
+    --text: #e8dfc8;
+    --title: #d4af37;
+    --subtitle: #a89968;
+    --btn-bg: #22242b;
+    --btn-border: #4a3f24;
+    --btn-text: #d4af37;
+    --btn-active-bg: #d4af37;
+    --btn-active-text: #14151a;
+    --footer-text: #7a7460;
+    --footer-border: #2a2c33;
+    --plot-bg: #17191f;
+    --grid: #2a2c33;
+    --up-color: #d4af37;
+    --down-color: #6b5d33;
+    --toggle-bg: #22242b;
+    --toggle-border: #4a3f24;
+    --toggle-text: #d4af37;
+  }
+
   body {
     font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
-    background: #f5f9fc;
+    background: var(--bg);
     margin: 0;
     padding: 24px;
-    color: #1a2b3c;
+    color: var(--text);
+    transition: background 0.2s, color 0.2s;
   }
   .container {
     max-width: 1100px;
     margin: 0 auto;
-    background: #ffffff;
+    background: var(--card-bg);
     border-radius: 12px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    box-shadow: 0 2px 12px var(--card-shadow);
     padding: 24px 32px 32px;
+    transition: background 0.2s, box-shadow 0.2s;
+  }
+  .header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
   }
   h1 {
     font-size: 22px;
-    color: #0d3b66;
+    color: var(--title);
     margin-bottom: 4px;
   }
   .subtitle {
     font-size: 13px;
-    color: #6b7c93;
+    color: var(--subtitle);
     margin-bottom: 20px;
+  }
+  .theme-switch {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .theme-switch button {
+    background: var(--toggle-bg);
+    border: 1px solid var(--toggle-border);
+    color: var(--toggle-text);
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    white-space: nowrap;
+    transition: all 0.15s;
+  }
+  .theme-switch button.active {
+    background: var(--btn-active-bg);
+    color: var(--btn-active-text);
+    border-color: var(--btn-active-bg);
   }
   .controls {
     display: flex;
@@ -39,9 +115,9 @@
     align-items: center;
   }
   .controls button {
-    background: #eaf3fb;
-    border: 1px solid #bcd9f0;
-    color: #0d5c9e;
+    background: var(--btn-bg);
+    border: 1px solid var(--btn-border);
+    color: var(--btn-text);
     padding: 6px 14px;
     border-radius: 6px;
     cursor: pointer;
@@ -49,9 +125,9 @@
     transition: all 0.15s;
   }
   .controls button:hover, .controls button.active {
-    background: #0d5c9e;
-    color: #fff;
-    border-color: #0d5c9e;
+    background: var(--btn-active-bg);
+    color: var(--btn-active-text);
+    border-color: var(--btn-active-bg);
   }
   #chart {
     width: 100%;
@@ -59,17 +135,25 @@
   }
   .footer-note {
     font-size: 12px;
-    color: #9aa8b8;
+    color: var(--footer-text);
     margin-top: 16px;
-    border-top: 1px solid #eef2f6;
+    border-top: 1px solid var(--footer-border);
     padding-top: 10px;
   }
 </style>
 </head>
 <body>
 <div class="container">
-  <h1>銅期貨 (Databento HG.c.0 連續合約) 價格趨勢圖</h1>
-  <div class="subtitle">日線 OHLC，可用下方按鈕或圖表下方拖曳軸自訂顯示區間</div>
+  <div class="header-row">
+    <div>
+      <h1>銅期貨 (Databento HG.c.0 連續合約) 價格趨勢圖</h1>
+      <div class="subtitle">日線 OHLC，可用下方按鈕或圖表下方拖曳軸自訂顯示區間</div>
+    </div>
+    <div class="theme-switch">
+      <button id="themeLight" class="active">淺色</button>
+      <button id="themeDark">深色金</button>
+    </div>
+  </div>
 
   <div class="controls">
     <button data-range="7">近1週</button>
@@ -86,7 +170,7 @@
 </div>
 
 <script>
-const rawData = [{"date": "2026-08-14", "open": 6.58, "high": 6.592, "low": 6.58, "close": 6.589}, {"date": "2026-08-17", "open": 6.604, "high": 6.604, "low": 6.595, "close": 6.595}, {"date": "2026-08-18", "open": 6.549, "high": 6.549, "low": 6.45, "close": 6.483}, {"date": "2026-08-19", "open": 6.459, "high": 6.4875, "low": 6.459, "close": 6.4875}, {"date": "2026-08-20", "open": 6.406, "high": 6.4615, "low": 6.406, "close": 6.4615}, {"date": "2026-08-21", "open": 6.5685, "high": 6.5815, "low": 6.564, "close": 6.5755}, {"date": "2026-08-24", "open": 6.618, "high": 6.618, "low": 6.614, "close": 6.614}, {"date": "2026-08-25", "open": 6.7005, "high": 6.7095, "low": 6.7005, "close": 6.7095}, {"date": "2026-08-26", "open": 6.75, "high": 6.75, "low": 6.5895, "close": 6.5895}, {"date": "2026-08-28", "open": 6.5845, "high": 6.6445, "low": 6.534, "close": 6.5465}, {"date": "2026-08-30", "open": 6.5185, "high": 6.5475, "low": 6.517, "close": 6.5475}, {"date": "2026-08-31", "open": 6.533, "high": 6.6175, "low": 6.528, "close": 6.605}, {"date": "2026-09-01", "open": 6.6235, "high": 6.6395, "low": 6.429, "close": 6.4375}, {"date": "2026-09-02", "open": 6.457, "high": 6.542, "low": 6.415, "close": 6.512}, {"date": "2026-09-03", "open": 6.537, "high": 6.58, "low": 6.5365, "close": 6.577}, {"date": "2026-09-04", "open": 6.5955, "high": 6.5985, "low": 6.5705, "close": 6.5805}, {"date": "2026-09-06", "open": 6.587, "high": 6.587, "low": 6.587, "close": 6.587}, {"date": "2026-09-07", "open": 6.62, "high": 6.645, "low": 6.62, "close": 6.645}, {"date": "2026-09-08", "open": 6.71, "high": 6.7825, "low": 6.7085, "close": 6.7395}, {"date": "2026-09-09", "open": 6.663, "high": 6.8055, "low": 6.663, "close": 6.776}, {"date": "2026-09-10", "open": 6.7525, "high": 6.7525, "low": 6.4415, "close": 6.4415}, {"date": "2026-09-11", "open": 6.4475, "high": 6.484, "low": 6.4475, "close": 6.4695}, {"date": "2026-09-14", "open": 6.41, "high": 6.41, "low": 6.281, "close": 6.3195}];
+const rawData = __DATA_JSON__;
 
 const dates = rawData.map(d => d.date);
 const opens = rawData.map(d => d.open);
@@ -96,39 +180,47 @@ const closes = rawData.map(d => d.close);
 
 document.getElementById('dateRangeLabel').textContent = dates[0] + ' ~ ' + dates[dates.length - 1];
 
-const trace = {
-  x: dates,
-  open: opens,
-  high: highs,
-  low: lows,
-  close: closes,
-  type: 'candlestick',
-  increasing: {line: {color: '#3ea6ff'}, fillcolor: '#3ea6ff'},
-  decreasing: {line: {color: '#a8c8e8'}, fillcolor: '#a8c8e8'},
-  name: '銅 HG'
-};
+function cssVar(name) {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
 
-const layout = {
-  margin: {t: 20, r: 30, l: 50, b: 40},
-  xaxis: {
-    rangeslider: {visible: true, thickness: 0.08, bgcolor: '#eaf3fb'},
-    type: 'date',
-    gridcolor: '#f0f4f8'
-  },
-  yaxis: {
-    title: '美分/磅',
-    gridcolor: '#f0f4f8'
-  },
-  plot_bgcolor: '#ffffff',
-  paper_bgcolor: '#ffffff',
-  font: {family: 'Noto Sans TC, Microsoft JhengHei, sans-serif', color: '#1a2b3c'}
-};
+function buildTrace() {
+  return {
+    x: dates,
+    open: opens,
+    high: highs,
+    low: lows,
+    close: closes,
+    type: 'candlestick',
+    increasing: {line: {color: cssVar('--up-color')}, fillcolor: cssVar('--up-color')},
+    decreasing: {line: {color: cssVar('--down-color')}, fillcolor: cssVar('--down-color')},
+    name: '銅 HG'
+  };
+}
 
-Plotly.newPlot('chart', [trace], layout, {responsive: true, displaylogo: false});
+function buildLayout() {
+  return {
+    margin: {t: 20, r: 30, l: 50, b: 40},
+    xaxis: {
+      rangeslider: {visible: true, thickness: 0.08, bgcolor: cssVar('--btn-bg')},
+      type: 'date',
+      gridcolor: cssVar('--grid'),
+      color: cssVar('--text')
+    },
+    yaxis: {
+      title: '美分/磅',
+      gridcolor: cssVar('--grid'),
+      color: cssVar('--text')
+    },
+    plot_bgcolor: cssVar('--plot-bg'),
+    paper_bgcolor: cssVar('--plot-bg'),
+    font: {family: 'Noto Sans TC, Microsoft JhengHei, sans-serif', color: cssVar('--text')}
+  };
+}
+
+Plotly.newPlot('chart', [buildTrace()], buildLayout(), {responsive: true, displaylogo: false});
 
 function setRange(days) {
-  const buttons = document.querySelectorAll('.controls button');
-  buttons.forEach(b => b.classList.remove('active'));
   if (days === 'all') {
     Plotly.relayout('chart', {'xaxis.autorange': true});
   } else {
@@ -149,6 +241,22 @@ document.querySelectorAll('.controls button').forEach(btn => {
     setRange(val === 'all' ? 'all' : parseInt(val, 10));
   });
 });
+
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  document.getElementById('themeLight').classList.toggle('active', theme === 'light');
+  document.getElementById('themeDark').classList.toggle('active', theme === 'dark-gold');
+  localStorage.setItem('copperChartTheme', theme);
+  Plotly.react('chart', [buildTrace()], buildLayout(), {responsive: true, displaylogo: false});
+}
+
+document.getElementById('themeLight').addEventListener('click', () => applyTheme('light'));
+document.getElementById('themeDark').addEventListener('click', () => applyTheme('dark-gold'));
+
+const savedTheme = localStorage.getItem('copperChartTheme');
+if (savedTheme === 'dark-gold') {
+  applyTheme('dark-gold');
+}
 </script>
 </body>
 </html>
